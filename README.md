@@ -1,15 +1,18 @@
 ## access-control extension.
 
+
+## How to use
+### Option 1: Java class
 export SPRING_DATASOURCE_DRIVERCLASSNAME=com.mysql.jdbc.Driver
 export SPRING_DATASOURCE_USERNAME=root
 export SPRING_DATASOURCE_PASSWORD=root
 export SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/accesscontrol_pandp_service?useSSL=false"
 
-java -cp target/lib/target/lib/mysql-connector-java-5.1.44.jar -jar target/lib/access-control-1.14.7.jar \
--Dloader.path=target/access-control-service-extension-1.0.0-SNAPSHOT.jar
+java \
+-cp "target/access-control-service-extension-1.0.0-SNAPSHOT.jar:target/lib/*" \
+com.backbase.accesscontrol.Application
 
-
-## How to use
+### Option 2: Base jar
 
 To use your service extension, you include the JAR build from this artifact to the CLASSPATH used when the service is 
 started.
@@ -19,7 +22,7 @@ When you run a service as an [executable JAR](https://docs.spring.io/spring-boot
 use the `loader.path` command line argument to add JARs or directories of JARs to the classpath. For example:
 
 ```
-./access-control-service-extension.jar -Dloader.path=/path/to/my.jar,/path/to/my/other.jar,/path/to/lib-dir
+./target/lib/access-control-1.14.7.jar -Dloader.path=target/access-control-service-extension-1.0.0-SNAPSHOT.jar
 ```
 
 If you are not running the Service as a bootable jar, use the mechanism available in your application server.
