@@ -16,16 +16,16 @@ import org.springframework.stereotype.Component;
 public class CustomEndpoints {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomEndpoints.class);
-    public static final String CUSTOM_PRE_HOOK_END_POINT = "direct:example.datagroup.presentation.create.preHook";
+    public static final String CUSTOM_PRE_HOOK_END_POINT = "direct:accessgroup.datagroup.add";
 
-    @Consume(uri = CUSTOM_PRE_HOOK_END_POINT)
+    @Consume(CUSTOM_PRE_HOOK_END_POINT)
     public void validatePostDataGroupBody(@Body InternalRequest<DataItemsValidatable> request) {
         LOGGER.info("======== In pre hook example method ========");
         DataItemsValidatable requestData = request.getData();
         if (requestData.getItems().isEmpty()) {
             LOGGER.warn("======== In pre hook Bad request Data group with empty items list: preHook ========");
             throw new BadRequestException()
-                .withMessage("Cannot have data group without items.");
+                    .withMessage("Cannot have data group without items.");
         }
     }
 

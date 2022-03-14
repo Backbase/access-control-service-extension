@@ -61,6 +61,6 @@ public class ExternalCreateDataGroupFlow extends CreateDataGroupFlow {
         AddDataGroupHandler addDataGroupHandler) {
         super(workerFactory, validationConfig, agreementsPersistenceService, persistenceServiceAgreementService,
             addDataGroupHandler);
-
+        LOGGER.info("======== ExternalCreateDataGroupFlow ctor ========");
     }
 }

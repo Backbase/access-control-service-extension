@@ -1,12 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.backbase.dbs.accesscontrol</groupId>
     <artifactId>access-control-service-extension</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <parent>
+        <groupId>com.backbase.buildingblocks</groupId>
+        <artifactId>backbase-service-extension-starter-parent</artifactId>
+        <version>14.0.0</version>
+        <relativePath/>
+    </parent>
 
     <properties>
-        <java.version>1.8</java.version>
+        <dbs.version>2022.01-LTS</dbs.version>
+        <java.version>11</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <dockerfile-maven-version>1.4.13</dockerfile-maven-version>
@@ -16,24 +23,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.backbase.dbs</groupId>
-                <artifactId>banking-services-bom</artifactId>
-                <version>2.19.0-cr.190</version>
+                <groupId>com.backbase</groupId>
+                <artifactId>backbase-bom</artifactId>
+                <version>${dbs.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.backbase.dbs.accesscontrol</groupId>
-                <artifactId>access-control</artifactId>
-                <version>1.0.0</version>
-                <classifier>classes</classifier>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>3.8.1</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -43,44 +37,51 @@
             <groupId>com.backbase.dbs.accesscontrol</groupId>
             <artifactId>access-control</artifactId>
             <classifier>classes</classifier>
+<!--            <scope>provided</scope>-->
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.46</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.13.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
 
     <profiles>
         <profile>
-            <id>docker</id>
+            <id>local</id>
+            <properties>
+                <active.spring.profile>local</active.spring.profile>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.spotify</groupId>
-                        <artifactId>dockerfile-maven-plugin</artifactId>
-                        <version>${dockerfile-maven-version}</version>
-                        <executions>
-                            <execution>
-                                <id>default</id>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>push</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
                         <configuration>
-                            <repository>${project.artifactId}</repository>
-                            <tag>${project.version}</tag>
-                            <buildArgs>
-                                <JAR_FILE>${project.artifactId}-${project.version}.jar</JAR_FILE>
-                            </buildArgs>
+                            <profiles>live</profiles>
+                            <mainClass>com.backbase.accesscontrol.Application</mainClass>
+                            <environmentVariables>
+                                <spring.datasource.driver-class-name>com.mysql.jdbc.Driver
+                                </spring.datasource.driver-class-name>
+                                <spring.datasource.username>root</spring.datasource.username>
+                                <spring.datasource.password>root</spring.datasource.password>
+                                <spring.datasource.url>
+                                    jdbc:mysql://localhost:3306/accesscontrol_pandp_service?allowPublicKeyRetrieval=true&amp;useSSL=false
+                                </spring.datasource.url>
+                                <USERCTX_KEY>JWTSecretKeyDontUseInProduction!</USERCTX_KEY>
+                            </environmentVariables>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
         </profile>
     </profiles>
+
 </project>

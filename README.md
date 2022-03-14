@@ -1,5 +1,14 @@
 ## access-control extension.
 
+export SPRING_DATASOURCE_DRIVERCLASSNAME=com.mysql.jdbc.Driver
+export SPRING_DATASOURCE_USERNAME=root
+export SPRING_DATASOURCE_PASSWORD=root
+export SPRING_DATASOURCE_URL="jdbc:mysql://localhost:3306/accesscontrol_pandp_service?useSSL=false"
+
+java -cp target/lib/target/lib/mysql-connector-java-5.1.44.jar -jar target/lib/access-control-1.14.7.jar \
+-Dloader.path=target/access-control-service-extension-1.0.0-SNAPSHOT.jar
+
+
 ## How to use
 
 To use your service extension, you include the JAR build from this artifact to the CLASSPATH used when the service is 

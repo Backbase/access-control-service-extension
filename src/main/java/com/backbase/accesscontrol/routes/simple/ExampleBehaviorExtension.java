@@ -1,6 +1,9 @@
 package com.backbase.accesscontrol.routes.simple;
 
-import com.backbase.accesscontrol.routes.serviceagreement.AddServiceAgreementRoute;
+import com.backbase.accesscontrol.client.rest.spec.model.IdItem;
+import com.backbase.accesscontrol.domain.DataGroupItem;
+import com.backbase.accesscontrol.routes.datagroup.AddDataGroupRoute;
+
 import com.backbase.buildingblocks.backend.communication.extension.annotations.BehaviorExtension;
 import com.backbase.buildingblocks.backend.communication.extension.annotations.PostHook;
 import com.backbase.buildingblocks.backend.communication.extension.annotations.PreHook;
@@ -23,33 +26,37 @@ import org.slf4j.LoggerFactory;
     name = "example-behavior",
     // The routeId parameter is the value returned by the getRouteId() method of the target SimpleExtensibleRouteBuilder
     // and is typically exposed as a constant by that route builder.  E.g.:
-    routeId = "AddServiceAgreementRoute"
+    routeId = "AddDataGroupRoute"
 )
-public class ExampleBehaviorExtension extends AddServiceAgreementRoute {
+public class ExampleBehaviorExtension extends AddDataGroupRoute {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExampleBehaviorExtension.class);
 
+    public ExampleBehaviorExtension() {
+        LOGGER.info("======== ExampleBehaviorExtension ctor ========");
+    }
+
     @PreHook
-    public void examplePreHook(InternalRequest<ServiceAgreementPostRequestBody> body, Exchange exchange) {
+    public void examplePreHook(InternalRequest<DataGroupItem> body, Exchange exchange) {
         // Custom pre-hook code here.
         // Update the "body" parameter type according to the producer method signature (parameter type) of the route you extend.
         // See the Camel documentation for details about how parameters are bound: http://camel.apache.org/bean-binding.html#BeanBinding-Parameterbinding
         // If no pre-hook behavior is required, this method can be deleted.
         LOGGER.info("======== In pre hook example method ========");
-        if (!StringUtils.isAlphanumericSpace(body.getData().getDescription())) {
-            LOGGER.warn("======== In pre hook Bad request on AddServiceAgreementRoute ========");
+        if (!StringUtils.isAlphanumericSpace(body.getData().getDataGroupId())) {
+            LOGGER.warn("======== In pre hook Bad request on AddDataGroupRoute ========");
             throw new BadRequestException("Description of Service Agreement cannot contain special characters.");
         }
     }
 
     @PostHook
-    public void examplePostHook(InternalRequest<ServiceAgreementPostResponseBody> responseBody, Exchange exchange) {
+    public void examplePostHook(InternalRequest<IdItem> responseBody, Exchange exchange) {
         // Custom post-hook code here.
         // Update the "body" parameter type according to the last consumer method signature (return type) of the route you extend.
         // See the Camel documentation for details about how parameters are bound: http://camel.apache.org/bean-binding.html#BeanBinding-Parameterbinding
         // If no post-hook behavior is required, this method can be deleted.
         LOGGER.info("======== In post hook example method ========");
-        LOGGER.info("======== Printing response service agreement id: {} ========", responseBody.getData().getId());
+        LOGGER.info("======== Printing response data group id: {} ========", responseBody.getData().getId());
     }
 
 }
